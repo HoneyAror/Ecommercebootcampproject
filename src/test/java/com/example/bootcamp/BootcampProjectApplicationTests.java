@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class BootcampProjectApplicationTests {
-	@Autowired
-	private CustomerRepository customerRepository;
+
 
 	@Test
 	void contextLoads() {
