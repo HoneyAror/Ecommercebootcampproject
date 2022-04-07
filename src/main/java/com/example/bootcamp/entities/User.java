@@ -3,6 +3,10 @@ package com.example.bootcamp.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -11,7 +15,7 @@ import java.util.*;
 
 @Entity
 @Data
-public class User extends Auditinginfo{
+public class User extends Auditinginfo implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,12 +23,13 @@ public class User extends Auditinginfo{
     @Column(name = "email",unique = true)
     private String email;
     @NotNull
+    @Column(nullable = false)
     private String firstName;
     private String middleName;
     private  String lastName;
-    @Size(min = 8,max = 15,message = "Password must contain 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
-    //@Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$")
     private  String password;
+    @Transient
+    private String confirmpassword;
     private  boolean isDeleted;
     private  boolean isActive;
     private  boolean isExpired;
@@ -34,7 +39,7 @@ public class User extends Auditinginfo{
     private Date passwordUpdatedDate;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name="role_id",referencedColumnName = "id"))
     private Set<Role> roles;
 
@@ -60,4 +65,48 @@ public class User extends Auditinginfo{
         }
     }
 
+
+    @Transient
+    private List<GrantedAuthority> grantedAuthorities;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return grantedAuthorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordUpdatedDate=" + passwordUpdatedDate +
+                '}';
+    }
 }

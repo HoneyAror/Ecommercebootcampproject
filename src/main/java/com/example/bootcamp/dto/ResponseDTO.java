@@ -11,7 +11,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class ResponseDTO {
-    Integer status;
+    Integer status=200;
     Object data;
     String message;
 

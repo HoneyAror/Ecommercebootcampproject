@@ -6,9 +6,12 @@ import com.example.bootcamp.entities.User;
 import com.example.bootcamp.repos.RoleRepository;
 import com.example.bootcamp.repos.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Objects;
+
 @Service
 public class Sellerservice {
 
@@ -18,10 +21,14 @@ public class Sellerservice {
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public Seller saveSeller(SellerDTO sellerTo){
         User userseller=new User();
         userseller.setEmail(sellerTo.getEmail());
-        userseller.setPassword(sellerTo.getPassword());
+        userseller.setPassword(passwordEncoder.encode(sellerTo.getPassword()));
+        userseller.setConfirmpassword(passwordEncoder.encode(sellerTo.getConfirmpassword()));
         userseller.setFirstName(sellerTo.getFirstName());
         userseller.setMiddleName(sellerTo.getMiddleName());
         userseller.setLastName(sellerTo.getLastName());
@@ -37,7 +44,12 @@ public class Sellerservice {
         seller.setCompanyContact(sellerTo.getCompanyContact());
         seller.setCompanyName(sellerTo.getCompanyName());
         seller.setUser(userseller);
-        return sellerRepository.save(seller);
+        String password = sellerTo.getPassword();
+        String confirmPassword = sellerTo.getConfirmpassword();
+        if (Objects.equals(password,confirmPassword )) {
+            return sellerRepository.save(seller);
+        }else
+            return null;
     }
 
 

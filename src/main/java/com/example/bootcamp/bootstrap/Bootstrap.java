@@ -46,16 +46,16 @@ public class Bootstrap implements ApplicationRunner {
 
 
         String email="aman.mishra@tothenew.com";
-        System.out.println("Going to save user");
+        System.out.println("Going to save admin");
         if(userRepository.findByEmail(email)==null){
-            userservice.saveAdmin(new UserDTO("aman.mishra@tothenew.com","HONEY","KUMAR","ARORA","Honey@12345",true,false,false,false,0));
+            userservice.saveAdmin(new UserDTO("aman.mishra@tothenew.com","HONEY","KUMAR","ARORA","Honey@12345","Honey@12345",true,false,false,false,0));
         }
 
        // Address sellerAddress = new Address("New ", "Delhi", "India", "F-226", 110018, "Labell");
         email="seller@gmail.com";
 
         if(userRepository.findByEmail(email)==null){
-            sellerservice.saveSeller(new SellerDTO(email,"VIJAY","SINGH","ARORA","Vijay@1233",true,false,false,false,0,"19AAACH6301A1Z8", "971354899999", "SellerCompany"));
+            sellerservice.saveSeller(new SellerDTO(email,"VIJAY","SINGH","ARORA","Vijay@1233","Vijay@1233",true,false,false,false,0,"19AAACH6301A1Z8", "971354899999", "SellerCompany"));
         }
 
 //        Set<Address> customerAddresses = new HashSet<>();
@@ -64,7 +64,7 @@ public class Bootstrap implements ApplicationRunner {
 
         email="customer@gmail.com";
         if(userRepository.findByEmail(email)==null){
-            customerservice.saveCustomer(new CustomerDTO(email,"MEENU","KUMAR","ARORA","Meenu@144",true,false,false,false,0,9866433333l));
+            customerservice.saveCustomer(new CustomerDTO(email,"MEENU","KUMAR","ARORA","Meenu@144","Meenu@144",true,false,false,false,0,9866433333l));
 
         }
 
