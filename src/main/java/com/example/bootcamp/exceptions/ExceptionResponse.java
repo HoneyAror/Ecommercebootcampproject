@@ -10,13 +10,11 @@ public class ExceptionResponse {
     private HttpStatus httpStatus;
    private Date timestamp;
     private String message;
-    private String details;
 
-    public ExceptionResponse(HttpStatus httpStatus,Date timestamp, String message, String details) {
+    public ExceptionResponse(HttpStatus httpStatus,Date timestamp, String message) {
         this.httpStatus = httpStatus;
         this.timestamp=timestamp;
         this.message = message;
-        this.details = details;
     }
 
     public HttpStatus getHttpStatus() {
@@ -41,13 +39,5 @@ public class ExceptionResponse {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
     }
 }

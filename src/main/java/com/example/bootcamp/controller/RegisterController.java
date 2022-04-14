@@ -3,13 +3,9 @@ package com.example.bootcamp.controller;
 import com.example.bootcamp.dto.CustomerDTO;
 import com.example.bootcamp.dto.ResponseDTO;
 import com.example.bootcamp.dto.SellerDTO;
-import com.example.bootcamp.dto.UserDTO;
-import com.example.bootcamp.entities.ConfirmationToken;
 import com.example.bootcamp.entities.Customer;
 import com.example.bootcamp.entities.Seller;
-import com.example.bootcamp.entities.User;
 import com.example.bootcamp.services.*;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -45,9 +40,6 @@ private Logger logger=LoggerFactory.getLogger(RegisterController.class);
     @Autowired
     private EmailService emailService;
 
-//    @Autowired
-//    private Roleservice roleservice;
-
 
     @GetMapping(value = "/internationalization")
     public String internationalization(){
@@ -59,7 +51,7 @@ private Logger logger=LoggerFactory.getLogger(RegisterController.class);
     @GetMapping(value = "/users")
     public ResponseDTO getalluser() {
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setStatus(200);
+        responseDTO.setStatus(HttpStatus.OK);
         responseDTO.setMessage("Data returned successfully!");
         responseDTO.setData(userservice.getUserData());
         return responseDTO;
@@ -88,12 +80,15 @@ private Logger logger=LoggerFactory.getLogger(RegisterController.class);
         }
     }
 
-    @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
-    public void confirmAcount(@RequestParam  ("token") String confirmationToken) {
-      customerservice.activateCustomer(confirmationToken);
-
+    @PutMapping(value = "/confirm-account")
+    public ResponseDTO confirmAcount(@RequestParam  ("token") String confirmationToken) {
+      return new ResponseDTO(HttpStatus.OK,customerservice.activateCustomer(confirmationToken),"SUCCESS");
     }
 
+    @PostMapping(value = "/resend/activation")
+    public ResponseDTO resendActivation(@RequestParam(required = true) String email) {
+       return new ResponseDTO(HttpStatus.OK,customerservice.resendActivation(email),"SUCCESS");
+    }
 
 }
 

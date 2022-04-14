@@ -4,11 +4,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
 @NoArgsConstructor
-public class Customer extends Auditinginfo{
+public class Customer extends Auditinginfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -22,5 +23,6 @@ public class Customer extends Auditinginfo{
         this.userId =userId;
         this.contact=contact;
     }
+
 
 }

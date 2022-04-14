@@ -11,17 +11,26 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class ResponseDTO {
-    Integer status=200;
+    HttpStatus status;
     Object data;
     String message;
 
-    public static
-    ResponseEntity<Object> generateResponse(String message, HttpStatus status, Object resobj1){
-        Map<String, Object> map=new HashMap<>();
-        map.put("message",message);
-        map.put("status",status.value());
-        map.put("data",resobj1.toString());
-        return new ResponseEntity<Object>(map,status);
-
+    public ResponseDTO(HttpStatus status, Object data, String message) {
+        this.status = status;
+        this.data = data;
+        this.message = message;
     }
+
+
+
+
+//    public static
+//    ResponseEntity<Object> generateResponse(String message, HttpStatus status, Object resobj1){
+//        Map<String, Object> map=new HashMap<>();
+//        map.put("message",message);
+//        map.put("status",status.value());
+//        map.put("data",resobj1.toString());
+//        return new ResponseEntity<Object>(map,status);
+//
+//    }
 }
