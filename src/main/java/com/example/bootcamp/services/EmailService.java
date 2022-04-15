@@ -7,6 +7,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 @Service("emailSenderService")
 public class EmailService {
@@ -24,5 +27,23 @@ public class EmailService {
     }
 
 
+    public void sendMail(String to,String subject,String text)
+    {
 
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SimpleMailMessage mail = new SimpleMailMessage();
+                    mail.setTo(to);
+                    mail.setFrom("arorahoney6465@gmail.com");
+                    mail.setSubject(subject);
+                    mail.setText(text);
+                    javaMailSender.send(mail);
+                } catch (MailException e) {
+                }
+            }
+        });
+    }
 }

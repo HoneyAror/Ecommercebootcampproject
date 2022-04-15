@@ -1,5 +1,6 @@
 package com.example.bootcamp.dto;   //data transfer object
 
+import com.example.bootcamp.entities.Address;
 import com.example.bootcamp.entities.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -33,6 +34,8 @@ public class UserDTO {
     @Temporal(TemporalType.DATE)
     private Date passwordUpdatedDate;
     private Set<Role> roles;
+    private Address address;
+
 
     public UserDTO(String email, String firstName, String middleName, String lastName, String password,String confirmpassword, boolean isActive, boolean isDeleted, boolean isExpired, boolean isLocked, Integer invalidAttemptCount){
         this.email=email;

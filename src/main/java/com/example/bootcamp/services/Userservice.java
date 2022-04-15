@@ -111,5 +111,14 @@ public class Userservice {
         return false;
     }
 
+    public User changePassword(User user,String password)
+    {
+        user.setPassword(passwordEncoder.encode(password));
+        String subject = "Your Password has been updated";
+        String body = "As your password has been updated now you can login with your new password";
+        emailService.sendMail(user.getEmail(),subject,body);
+        return userRepository.save(user);
+    }
+
 
 }

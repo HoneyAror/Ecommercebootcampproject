@@ -22,8 +22,6 @@ public class ResponseDTO {
     }
 
 
-
-
 //    public static
 //    ResponseEntity<Object> generateResponse(String message, HttpStatus status, Object resobj1){
 //        Map<String, Object> map=new HashMap<>();

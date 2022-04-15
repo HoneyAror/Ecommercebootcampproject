@@ -1,7 +1,8 @@
-package com.example.bootcamp.Response;
+package com.example.bootcamp.dto;
 
 import com.example.bootcamp.entities.Address;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.bootcamp.entities.Seller;
+import com.example.bootcamp.entities.User;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-public class SellerResponseClass {
+public class SellerResponseDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,5 +38,7 @@ public class SellerResponseClass {
     private String companyContact;
     @Column(unique = true)
     private String  companyName;
-     private Address address;
+    private Address address;
+
 }
+

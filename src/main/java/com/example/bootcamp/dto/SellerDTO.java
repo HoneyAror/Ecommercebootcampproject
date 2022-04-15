@@ -1,6 +1,8 @@
 package com.example.bootcamp.dto;
 
 import com.example.bootcamp.entities.Address;
+import com.example.bootcamp.entities.Seller;
+import com.example.bootcamp.entities.User;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
@@ -16,7 +18,7 @@ public class SellerDTO extends UserDTO {
     private String companyContact;
     @Column(unique = true)
     private String  companyName;
-//    private Address address;
+
 
     public String getGst() {
         return gst;
@@ -42,21 +44,39 @@ public class SellerDTO extends UserDTO {
         this.companyName = companyName;
     }
 
-//    public Address getAddress() {
-//        return address;
-//    }
-//
-//    public void setAddress(Address address) {
-//        this.address = address;
-//    }
 
     public SellerDTO(String email, String firstName, String middleName, String lastName, String password, String confirmpassword,boolean isActive, boolean isDeleted, boolean isExpired, boolean isLocked, int invalidAttemptCount, String gst, String companyContact, String companyName){
         super(email,firstName,middleName,lastName,password,confirmpassword,isActive,isDeleted,isExpired,isLocked,invalidAttemptCount);
         this.gst=gst;
         this.companyContact=companyContact;
         this.companyName=companyName;
-//        this.address=address;
   }
+//
+//    public SellerDTO(String email, String firstName, String middleName, String lastName, String password, String confirmpassword, boolean isActive, boolean isDeleted, boolean isExpired, boolean isLocked, Integer invalidAttemptCount, String gst, String companyContact, String companyName, Address address) {
+//        super(email, firstName, middleName, lastName, password, confirmpassword, isActive, isDeleted, isExpired, isLocked, invalidAttemptCount);
+//        this.gst = gst;
+//        this.companyContact = companyContact;
+//        this.companyName = companyName;
+//        this.address = address;
+//    }
 
+//    public static Seller mapper(SellerDTO sellerTO,User user)
+//    {
+//        Seller seller = new Seller();
+//        seller.setCompanyName(sellerTO.getCompanyName());
+//        seller.setCompanyContact(sellerTO.getCompanyContact());
+//        seller.setGst(sellerTO.getGst());
+//        Address address= sellerTO.getAddress();
+//        Address sellerAddress = new Address();
+//        sellerAddress.setCity(address.getCity());
+//        sellerAddress.setState(address.getState());
+//        sellerAddress.setCountry(address.getCountry());
+//        sellerAddress.setAddressLine(address.getAddressLine());
+//        sellerAddress.setLabel(address.getLabel());
+//        sellerAddress.setZipCode(address.getZipCode());
+//        sellerAddress.setUser(user);
+//        seller.setUser(user);
+//        return seller;
+//    }
 
 }

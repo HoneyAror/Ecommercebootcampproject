@@ -60,8 +60,8 @@ private Logger logger=LoggerFactory.getLogger(RegisterController.class);
 
     @PostMapping(value = "/seller")         //ResponseEntity wraps the original object as its body which is optional .If you want to return an object or null, ResponseEntity will work in either way.
     private ResponseEntity<Object> registerSeller(@Valid @RequestBody SellerDTO sellerDTO) {
-        Seller sellerDTO1=sellerservice.saveSeller(sellerDTO);
-        if(sellerDTO1 == null){
+        Seller seller1=sellerservice.saveSeller(sellerDTO);
+        if(seller1 == null){
             return new ResponseEntity<>("Your Password and confirmPassword doesn't matched. " +
                     "\nPlease Check the confirm password and try again", HttpStatus.EXPECTATION_FAILED);
         } else {

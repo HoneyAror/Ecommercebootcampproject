@@ -1,22 +1,20 @@
 package com.example.bootcamp.services;
 
-import com.example.bootcamp.Response.SellerResponseClass;
-import com.example.bootcamp.dto.CustomerDTO;
 import com.example.bootcamp.dto.SellerDTO;
+import com.example.bootcamp.dto.SellerResponseDTO;
 import com.example.bootcamp.entities.Address;
-import com.example.bootcamp.entities.Customer;
 import com.example.bootcamp.entities.Seller;
 import com.example.bootcamp.entities.User;
+import com.example.bootcamp.exceptions.CannotUpdateException;
 import com.example.bootcamp.exceptions.UserNotFoundException;
 import com.example.bootcamp.repos.RoleRepository;
 import com.example.bootcamp.repos.SellerRepository;
 import com.example.bootcamp.repos.UserRepository;
+import com.example.bootcamp.util.SecurityContextHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +42,9 @@ public class Sellerservice {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private Userservice userservice;
+
     public Seller saveSeller(SellerDTO sellerTo){
         User userseller=new User();
         userseller.setEmail(sellerTo.getEmail());
@@ -58,11 +59,10 @@ public class Sellerservice {
         userseller.setLocked(sellerTo.isLocked());
         userseller.setInvalidAttemptCount(sellerTo.getInvalidAttemptCount());
         userseller.setRoles(Collections.singleton(roleRepository.findByAuthority("ROLE_SELLER")));
-//        userseller.setAddresses(Collections.singleton(sellerTo.getAddress()));
+        userseller.setAddresses(Collections.singleton(sellerTo.getAddress()));
         Seller seller=new Seller();
         seller.setGst(sellerTo.getGst());
         seller.setCompanyContact(sellerTo.getCompanyContact());
-        seller.setCompanyName(sellerTo.getCompanyName());
         seller.setUser(userseller);
         String password = sellerTo.getPassword();
         String confirmPassword = sellerTo.getConfirmpassword();
@@ -121,20 +121,61 @@ public class Sellerservice {
     }
 
 
-    public String getSellerProfile(){
-        UserDetails userDetails= (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username=userDetails.getUsername();
-        User user=userRepository.findByEmail(username);
+    public SellerResponseDTO getSellerProfile(String email){
+     SellerResponseDTO sellerResponseClass = new SellerResponseDTO();
+     User user= SecurityContextHolderUtil.getCurrentUserEmail();
+      //  User user =userRepository.findByEmail(email);
+        if(user!=null) {
+            Optional<Seller> seller1 = sellerRepository.findById(user.getId());
+            if(seller1.isPresent()){
+                Seller seller=seller1.get();
+                sellerResponseClass.setId(seller.getUser().getId());
+                sellerResponseClass.setEmail(seller.getUser().getEmail());
+                sellerResponseClass.setFirstName(seller.getUser().getFirstName());
+                sellerResponseClass.setMiddleName(seller.getUser().getMiddleName());
+                sellerResponseClass.setLastName(seller.getUser().getLastName());
+                sellerResponseClass.setActive(seller.getUser().isActive());
+                sellerResponseClass.setGst(seller.getGst());
+                sellerResponseClass.setCompanyName(seller.getCompanyName());
+                sellerResponseClass.setCompanyContact(seller.getCompanyContact());
+                // sellerResponseClass.setAddress(seller.getUser().)
+            }
+        }
+        return sellerResponseClass;
+
+    }
+
+    public String updateSeller(SellerDTO sellerDTO ){
+        //String email= SecurityContextHolderUtil.getCurrentUserEmail();
+        User user=userRepository.findByEmail("");
         Seller seller=sellerRepository.findById(user.getId()).get();
-        SellerResponseClass sellerResponseClass=new SellerResponseClass();
-        sellerResponseClass.setId(seller.getUser().getId());
-        sellerResponseClass.setFirstName(seller.getUser().getFirstName());
-        sellerResponseClass.setMiddleName(seller.getUser().getMiddleName());
-        sellerResponseClass.setLastName(seller.getUser().getLastName());
-        sellerResponseClass.setActive(seller.getUser().isActive());
-        sellerResponseClass.setCompanyName(seller.getCompanyName());
-        sellerResponseClass.setCompanyContact(seller.getCompanyContact());
-        return ("hhhh");
+        if (user.getEmail() != sellerDTO.getEmail())
+            throw new CannotUpdateException("You cannot change email");
+        if (sellerDTO.getPassword() != null)
+            throw new CannotUpdateException("You cannot change Password\nTo change please hit /changePassword API");
+        if (sellerDTO.getFirstName() != null)
+            user.setFirstName(sellerDTO.getFirstName());
+        if (sellerDTO.getMiddleName() != null)
+            user.setMiddleName(sellerDTO.getMiddleName());
+        if (sellerDTO.getLastName() !=null)
+            user.setLastName(sellerDTO.getLastName());
+        if (sellerDTO.getCompanyContact() != null)
+            seller.setCompanyContact(sellerDTO.getCompanyContact());
+        if (seller.getCompanyName() != null)
+            seller.setCompanyName(sellerDTO.getCompanyName());
+        if (sellerDTO.getGst() != null)
+            seller.setGst(sellerDTO.getGst());
+        userRepository.save(user);
+        sellerRepository.save(seller);
+        return "SELLER UPDATED!";
+    }
+//
+    public String updatePassword(String password)
+    {
+        //String email = SecurityContextHolderUtil.getCurrentUserEmail();
+        User user = userservice.findByEmail("");
+        userservice.changePassword(user,password);
+        return "PASSWORD CHANGED!";
     }
 
 
