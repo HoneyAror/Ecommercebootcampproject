@@ -16,6 +16,9 @@ public class AddressDTO {
     private Integer zipCode;
     private String label;
 
+    public AddressDTO() {
+    }
+
     public AddressDTO(String city, String state, String country, String addressLine, Integer zipCode, String label){
         this.city=city;
         this.state=state;

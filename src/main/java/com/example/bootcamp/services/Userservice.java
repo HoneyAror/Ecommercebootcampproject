@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -118,6 +119,24 @@ public class Userservice {
         String body = "As your password has been updated now you can login with your new password";
         emailService.sendMail(user.getEmail(),subject,body);
         return userRepository.save(user);
+    }
+
+    public String lockOrUnlockUser(Long user_id,Boolean lock)
+    {
+        User user = userRepository.getById(user_id);
+        if (user == null)
+            throw new EntityNotFoundException("User with this userid cannot be found");
+        user.setLocked(lock);
+        userRepository.save(user);
+        if (user.isLocked())
+        {
+            emailService.sendMail(user.getEmail(),"Info about account","This is to inform that your account got locked by admin\nPlease contact the admin");
+            return "User was unlocked and now locked";
+        }
+        else{
+            emailService.sendMail(user.getEmail(),"Info about account","This is to inform that your account got unlocked by admin\nEnjoy being with us");
+            return "User was locked and now unlocked";
+        }
     }
 
 

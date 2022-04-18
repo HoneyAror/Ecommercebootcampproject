@@ -44,8 +44,8 @@ public class User extends Auditinginfo implements UserDetails {
     private Set<Role> roles;
 
     @JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-    private Set<Address> addresses;
+    @OneToMany
+    private Set<Address> addresses=new HashSet<>();
 
     @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
@@ -56,14 +56,14 @@ public class User extends Auditinginfo implements UserDetails {
     private Customer customer;
 
 
-    public  void addAddress(Address address) {
-        if (address != null) {
-            if (addresses == null) {
-                addresses = new HashSet<>();
-            }
-            addresses.add(address);
-        }
-    }
+//    public  void addAddress(Address address) {
+//        if (address != null) {
+//            if (addresses == null) {
+//                addresses = new HashSet<>();
+//            }
+//            addresses.add(address);
+//        }
+//    }
 
 
     @Transient

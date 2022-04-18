@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 @Data
 @Entity
-@NoArgsConstructor
 public class Address extends Auditinginfo{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +22,14 @@ public class Address extends Auditinginfo{
     private Integer zipCode;
     private String label;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id")
+    @ManyToOne(fetch =FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    public Address(String city,String state,String country,String addressLine,Integer zipCode,String label){
+    public Address() {
+    }
+
+    public Address(String city, String state, String country, String addressLine, Integer zipCode, String label){
         this.city=city;
         this.state=state;
         this.country=country;

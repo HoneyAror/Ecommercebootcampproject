@@ -4,7 +4,7 @@
 //import java.util.Date;
 //
 //@Entity
-//public class Orders {
+//public class Orderinfo {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;

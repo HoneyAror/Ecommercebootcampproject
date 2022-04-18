@@ -34,10 +34,12 @@ public class UserDTO {
     @Temporal(TemporalType.DATE)
     private Date passwordUpdatedDate;
     private Set<Role> roles;
-    private Address address;
+    private AddressDTO address;
 
+    public UserDTO() {
+    }
 
-    public UserDTO(String email, String firstName, String middleName, String lastName, String password,String confirmpassword, boolean isActive, boolean isDeleted, boolean isExpired, boolean isLocked, Integer invalidAttemptCount){
+    public UserDTO(String email, String firstName, String middleName, String lastName, String password, String confirmpassword, boolean isActive, boolean isDeleted, boolean isExpired, boolean isLocked, Integer invalidAttemptCount){
         this.email=email;
         this.firstName=firstName;
         this.middleName=middleName;

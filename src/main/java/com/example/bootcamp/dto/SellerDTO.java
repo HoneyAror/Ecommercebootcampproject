@@ -51,6 +51,9 @@ public class SellerDTO extends UserDTO {
         this.companyContact=companyContact;
         this.companyName=companyName;
   }
+
+    public SellerDTO() {
+    }
 //
 //    public SellerDTO(String email, String firstName, String middleName, String lastName, String password, String confirmpassword, boolean isActive, boolean isDeleted, boolean isExpired, boolean isLocked, Integer invalidAttemptCount, String gst, String companyContact, String companyName, Address address) {
 //        super(email, firstName, middleName, lastName, password, confirmpassword, isActive, isDeleted, isExpired, isLocked, invalidAttemptCount);

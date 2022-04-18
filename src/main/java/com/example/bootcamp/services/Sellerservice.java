@@ -1,12 +1,15 @@
 package com.example.bootcamp.services;
 
+import com.example.bootcamp.dto.AddressDTO;
 import com.example.bootcamp.dto.SellerDTO;
 import com.example.bootcamp.dto.SellerResponseDTO;
 import com.example.bootcamp.entities.Address;
 import com.example.bootcamp.entities.Seller;
 import com.example.bootcamp.entities.User;
+import com.example.bootcamp.exceptions.AddressNotFoundException;
 import com.example.bootcamp.exceptions.CannotUpdateException;
 import com.example.bootcamp.exceptions.UserNotFoundException;
+import com.example.bootcamp.repos.AddressRepository;
 import com.example.bootcamp.repos.RoleRepository;
 import com.example.bootcamp.repos.SellerRepository;
 import com.example.bootcamp.repos.UserRepository;
@@ -18,10 +21,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +45,9 @@ public class Sellerservice {
     @Autowired
     private Userservice userservice;
 
+    @Autowired
+    private AddressRepository addressRepository;
+
     public Seller saveSeller(SellerDTO sellerTo){
         User userseller=new User();
         userseller.setEmail(sellerTo.getEmail());
@@ -59,18 +62,30 @@ public class Sellerservice {
         userseller.setLocked(sellerTo.isLocked());
         userseller.setInvalidAttemptCount(sellerTo.getInvalidAttemptCount());
         userseller.setRoles(Collections.singleton(roleRepository.findByAuthority("ROLE_SELLER")));
-        userseller.setAddresses(Collections.singleton(sellerTo.getAddress()));
+        userRepository.save(userseller);
         Seller seller=new Seller();
         seller.setGst(sellerTo.getGst());
         seller.setCompanyContact(sellerTo.getCompanyContact());
+        seller.setCompanyName(sellerTo.getCompanyName());
         seller.setUser(userseller);
         String password = sellerTo.getPassword();
+        Address address=new Address();
+        address.setCity(sellerTo.getAddress().getCity());
+        address.setState(sellerTo.getAddress().getState());
+        address.setCountry(sellerTo.getAddress().getCountry());
+        address.setAddressLine(sellerTo.getAddress().getAddressLine());
+        address.setZipCode(sellerTo.getAddress().getZipCode());
+        address.setLabel(sellerTo.getAddress().getLabel());
+        address.setUser(userseller);
+        addressRepository.save(address);
         String confirmPassword = sellerTo.getConfirmpassword();
         if (Objects.equals(password,confirmPassword )) {
             return sellerRepository.save(seller);
         }else
             return null;
     }
+
+
 
     public List<SellerDTO> getSellerData() {
         List<Seller> users = sellerRepository.findAllSeller(PageRequest.of(2,2, Sort.by("id")));
@@ -121,14 +136,14 @@ public class Sellerservice {
     }
 
 
-    public SellerResponseDTO getSellerProfile(String email){
+    public SellerResponseDTO getSellerProfile(){
      SellerResponseDTO sellerResponseClass = new SellerResponseDTO();
      User user= SecurityContextHolderUtil.getCurrentUserEmail();
-      //  User user =userRepository.findByEmail(email);
         if(user!=null) {
             Optional<Seller> seller1 = sellerRepository.findById(user.getId());
             if(seller1.isPresent()){
                 Seller seller=seller1.get();
+                seller.getUser().getAddresses();
                 sellerResponseClass.setId(seller.getUser().getId());
                 sellerResponseClass.setEmail(seller.getUser().getEmail());
                 sellerResponseClass.setFirstName(seller.getUser().getFirstName());
@@ -138,7 +153,6 @@ public class Sellerservice {
                 sellerResponseClass.setGst(seller.getGst());
                 sellerResponseClass.setCompanyName(seller.getCompanyName());
                 sellerResponseClass.setCompanyContact(seller.getCompanyContact());
-                // sellerResponseClass.setAddress(seller.getUser().)
             }
         }
         return sellerResponseClass;
@@ -146,13 +160,7 @@ public class Sellerservice {
     }
 
     public String updateSeller(SellerDTO sellerDTO ){
-        //String email= SecurityContextHolderUtil.getCurrentUserEmail();
-        User user=userRepository.findByEmail("");
-        Seller seller=sellerRepository.findById(user.getId()).get();
-        if (user.getEmail() != sellerDTO.getEmail())
-            throw new CannotUpdateException("You cannot change email");
-        if (sellerDTO.getPassword() != null)
-            throw new CannotUpdateException("You cannot change Password\nTo change please hit /changePassword API");
+        User user= SecurityContextHolderUtil.getCurrentUserEmail();
         if (sellerDTO.getFirstName() != null)
             user.setFirstName(sellerDTO.getFirstName());
         if (sellerDTO.getMiddleName() != null)
@@ -160,22 +168,43 @@ public class Sellerservice {
         if (sellerDTO.getLastName() !=null)
             user.setLastName(sellerDTO.getLastName());
         if (sellerDTO.getCompanyContact() != null)
-            seller.setCompanyContact(sellerDTO.getCompanyContact());
-        if (seller.getCompanyName() != null)
-            seller.setCompanyName(sellerDTO.getCompanyName());
+            user.getSeller().setCompanyContact(sellerDTO.getCompanyContact());
+        if (sellerDTO.getCompanyName() != null)
+            user.getSeller().setCompanyName(sellerDTO.getCompanyName());
         if (sellerDTO.getGst() != null)
-            seller.setGst(sellerDTO.getGst());
+            user.getSeller().setGst(sellerDTO.getGst());
         userRepository.save(user);
-        sellerRepository.save(seller);
         return "SELLER UPDATED!";
     }
-//
+
     public String updatePassword(String password)
     {
-        //String email = SecurityContextHolderUtil.getCurrentUserEmail();
-        User user = userservice.findByEmail("");
+        User user= SecurityContextHolderUtil.getCurrentUserEmail();
         userservice.changePassword(user,password);
         return "PASSWORD CHANGED!";
+    }
+
+
+    public String updateAddress(AddressDTO address,Long id) {
+        Address address1 = addressRepository.getById(id);
+        if (address1 != null) {
+            if(address.getCity()!=null)
+            address1.setCity(address.getCity());
+            if(address.getState()!=null)
+            address1.setState(address.getState());
+            if(address.getCountry()!=null)
+            address1.setCountry(address.getCountry());
+            if(address.getAddressLine()!=null)
+            address1.setAddressLine(address.getAddressLine());
+            if(address.getZipCode()!=null)
+            address1.setZipCode(address.getZipCode());
+            if(address.getLabel()!=null)
+            address1.setLabel(address.getLabel());
+            addressRepository.save(address1);
+            return ("ADDRESS UPDATED!");
+        } else {
+            throw new AddressNotFoundException("ADDRESS NOT FOUND");
+        }
     }
 
 

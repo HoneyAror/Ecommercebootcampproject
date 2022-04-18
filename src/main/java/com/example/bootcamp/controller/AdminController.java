@@ -3,14 +3,15 @@ package com.example.bootcamp.controller;
 import com.example.bootcamp.dto.ResponseDTO;
 import com.example.bootcamp.services.Customerservice;
 import com.example.bootcamp.services.Sellerservice;
+import com.example.bootcamp.services.Userservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityNotFoundException;
 
 @RestController
+@RequestMapping("/admin")
 public class AdminController {
 
    @Autowired
@@ -18,6 +19,9 @@ public class AdminController {
 
    @Autowired
    private Sellerservice sellerservice;
+
+   @Autowired
+   private Userservice userservice;
 
     @GetMapping(value = "/view/Customers")
     public ResponseDTO getCustomers() {
@@ -58,6 +62,11 @@ public class AdminController {
     public ResponseDTO deactivateSeller(@RequestParam("id") Long id) throws Exception {
         ResponseDTO responseDTO = new ResponseDTO();
         return new ResponseDTO(HttpStatus.OK,sellerservice.admindeactivateSeller(id),"SUCCESS");
+    }
+
+    @PatchMapping("/user/lockorunlock/{user_id}")
+    public ResponseDTO lockOrUnlockUser(@PathVariable("user_id") Long user_id,@RequestParam(name = "lock")Boolean lock) {
+            return new ResponseDTO( HttpStatus.OK,userservice.lockOrUnlockUser(user_id,lock),"SUCCESS");
     }
 
 

@@ -29,6 +29,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
    AppUserDetailService userDetailService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -39,10 +40,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry sc =
-                httpSecurity.csrf().disable()
-                        .authorizeRequests().antMatchers("/**").permitAll(); // jispe @preauthorized annotation ni h vo sabko accessible h
-        sc.anyRequest().authenticated().and().
+
+        httpSecurity.csrf().disable().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/seller/**").hasAnyRole("SELLER","ADMIN")
+                .antMatchers("/customer/**").hasAnyRole("CUSTOMER","ADMIN")
+                .antMatchers("/register/**").permitAll() //register vli public h
+        .anyRequest().authenticated().and().
                 exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.addFilterBefore(accessTokenFilter, UsernamePasswordAuthenticationFilter.class);

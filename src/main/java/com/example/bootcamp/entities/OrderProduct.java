@@ -10,7 +10,7 @@
 //
 //    @OneToOne
 //    @JoinColumn(name = "orders_id")
-//    private Orders orders;
+//    private Orderinfo orders;
 //
 //    @OneToOne
 //    @JoinColumn(name = "product_variation_id")

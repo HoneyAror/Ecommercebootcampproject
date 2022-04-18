@@ -54,6 +54,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
+    @Autowired
     public TokenStore tokenStore() {
         return new JdbcTokenStore(dataSource);
     }

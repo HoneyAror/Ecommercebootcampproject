@@ -12,15 +12,16 @@ public class ForgotPasswordController {
     @Autowired
     private Userservice userservice;
 
-    @PostMapping(value = "/forgot/password")
+    @PostMapping(value = "register/forgot/password")
     public ResponseDTO forgotPassword(@RequestParam(required = true) String email){
         return new ResponseDTO(HttpStatus.OK,userservice.forgotPassword(email),"SUCCESS");
     }
 
-    @PatchMapping(value = "/reset-password")
-    public ResponseDTO resetPassword(@RequestHeader String confirmationToken, @RequestParam String password, @RequestParam String confirmPassword){
+    @PatchMapping(value = "register/reset-password")
+    public ResponseDTO resetPasswordSeller(@RequestHeader String confirmationToken, @RequestParam String password, @RequestParam String confirmPassword){
         return new ResponseDTO(HttpStatus.OK,userservice.resetPassword(confirmationToken,password,confirmPassword),"SUCCESS");
     }
+
 
 
 }
